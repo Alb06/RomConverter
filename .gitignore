@@ -1,0 +1,36 @@
+# Ignorer les fichiers de configuration de l'éditeur
+.vscode/
+.idea/
+
+# Ignorer les fichiers de log
+*.log
+
+# Ignorer les dossiers bin et obj
+bin/
+obj/
+
+# Ignorer les fichiers temporaires
+*~
+*.tmp
+*.temp
+Temp/
+
+# Ignorer les fichiers de package PowerShell
+*.nupkg
+
+# Ignorer les fichiers de sauvegarde
+*Backup*
+
+# Ignorer les fichiers spécifiques à l'OS ou à l'éditeur
+.DS_Store
+Thumbs.db
+
+# Ignorer les fichiers de script spécifiques compilés
+*.psd1
+*.psm1
+
+# Autres fichiers et dossiers à ignorer selon les besoins
+# par exemple, fichiers de configuration personnalisés, secrets, etc.
+settings.txt
+*.exe
+
