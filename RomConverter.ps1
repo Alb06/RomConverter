@@ -161,6 +161,7 @@ function Load-Settings {
         "", "", "", ""
     }
 }
+
 #sauvgarde des parametres
 function Save-Settings([string]$logFile, $sourceFolder, $decompressionFolder, $chdFolder, $recompressionFolder) {
     Write-Log $logFile "Enregistrement des paramètres dans le fichier de configuration."
@@ -213,6 +214,7 @@ $scriptBlock = {
 
         # Traitement des fichiers .7z vers décompressés
         $currentFile = $file.FullName
+        $outputUpdates.Add("7ZIP start to process on " + $file.Name)
         $output = & $pathTo7Zip x $currentFile -o"$decompressionFolder" 2>&1
         $output | ForEach-Object {
             $outputUpdates.Add($_)
@@ -223,7 +225,7 @@ $scriptBlock = {
         $outputCHD = Join-Path $chdFolder ($file.BaseName + ".chd")
         foreach ($unzippedFile in $unzippedFiles) {
             $currentFile = $unzippedFile.FullName
-            #$output = & "$PSScriptRoot\chdman.exe" createcd -i "$currentFile" -o "$outputCHD" 2>&1
+            $outputUpdates.Add("CHDMAN start to process on " + $unzippedFile.Name)
             $output = & "$pathToScript\chdman.exe" createcd -i "$currentFile" -o "$outputCHD" 2>&1
             $output | ForEach-Object {
                 $outputUpdates.Add($_)
@@ -296,7 +298,20 @@ $timer.Add_Tick({
     }
 
     while ($outputUpdates.Count -gt 0) {
-        Write-Host $outputUpdates.Take()
+        $output = $outputUpdates.Take()
+        # Gestion Console et Logs
+        if($output -match "start to process on") {
+            Write-Host $output -ForegroundColor Blue
+            Write-Log $logFile $output
+        }
+        if($output -match "(?i)error") {
+            Write-Host "  $output" -ForegroundColor Red
+            Write-Log $logFile "  $output"
+        }
+        else {
+            Write-Host "  $output"
+            Write-Log $logFile "  $output"
+        }
         if($outputUpdates.IsAddingCompleted) {
             break
         }
